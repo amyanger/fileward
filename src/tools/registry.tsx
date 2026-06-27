@@ -6,6 +6,8 @@ import { ImagesToPdfPanel } from './imagesToPdf/Panel'
 import { PdfToImagesPanel } from './pdfToImages/Panel'
 import { MergeSplitPanel } from './mergeSplit/Panel'
 import { CompressPdfPanel } from './compressPdf/Panel'
+import { PageNumbersPanel } from './pageNumbers/Panel'
+import { WatermarkPanel } from './watermark/Panel'
 
 export interface ToolEntry {
   def: ToolDef
@@ -20,6 +22,14 @@ export const TOOLS: ToolEntry[] = [
   {
     def: { id: 'compress-pdf', title: 'Compress PDF', description: 'Shrink large or scanned PDFs.', accept: 'application/pdf' },
     renderPanel: (p) => <CompressPdfPanel {...p} />,
+  },
+  {
+    def: { id: 'page-numbers', title: 'Add Page Numbers', description: 'Stamp page numbers onto a PDF.', accept: 'application/pdf' },
+    renderPanel: (p) => <PageNumbersPanel {...p} />,
+  },
+  {
+    def: { id: 'watermark', title: 'Watermark PDF', description: 'Overlay text like CONFIDENTIAL across pages.', accept: 'application/pdf' },
+    renderPanel: (p) => <WatermarkPanel {...p} />,
   },
   {
     def: { id: 'images-to-pdf', title: 'Images → PDF', description: 'Turn photos or scans into one PDF.', accept: 'image/*' },

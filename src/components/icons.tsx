@@ -68,6 +68,20 @@ const ToolGlyphs: Record<string, ReactNode> = {
       <circle cx="8.5" cy="9" r="1" />
     </>
   ),
+  'page-numbers': (
+    <>
+      <rect x="5" y="3.5" width="14" height="17" rx="1.5" />
+      <path d="M8.5 8h7M8.5 11h7" />
+      <path d="M14 14.5h2.5v3.5H14v-3.5Z" />
+    </>
+  ),
+  watermark: (
+    <>
+      <rect x="5" y="3.5" width="14" height="17" rx="1.5" />
+      <path d="M7.5 16 16.5 7" />
+      <path d="M9 9.5h2M13 14.5h2" />
+    </>
+  ),
 }
 
 export function ToolIcon({ id, ...props }: { id: string } & SVGProps<SVGSVGElement>) {
