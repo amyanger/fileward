@@ -3,9 +3,7 @@ import { downloadOutputs } from './download'
 
 describe('downloadOutputs', () => {
   beforeEach(() => {
-    // @ts-ignore stub
     globalThis.URL.createObjectURL = vi.fn(() => 'blob:x')
-    // @ts-ignore stub
     globalThis.URL.revokeObjectURL = vi.fn()
   })
   it('triggers a single download for one output', async () => {

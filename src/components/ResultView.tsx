@@ -16,8 +16,8 @@ export function ResultView({ result }: { result: ToolResult | null }) {
           Download {result.outputs.length > 1 ? 'all (zip)' : ''}
         </button>
       </div>
-      {result.notes?.map((n) => (
-        <p key={n} className="mt-2 text-sm text-slate-500">
+      {result.notes?.map((n, i) => (
+        <p key={i} className="mt-2 text-sm text-slate-500">
           {n}
         </p>
       ))}

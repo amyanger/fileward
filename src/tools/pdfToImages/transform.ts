@@ -6,13 +6,7 @@ export interface PdfToImagesOptions {
 }
 
 export interface PdfRenderDeps {
-  pageCount(bytes: ArrayBuffer): Promise<number>
-  renderPage(
-    bytes: ArrayBuffer,
-    pageNo: number,
-    scale: number,
-    format: string,
-  ): Promise<Blob>
+  renderDocument(bytes: ArrayBuffer, scale: number, format: string): Promise<Blob[]>
 }
 
 const EXT: Record<PdfToImagesOptions['format'], string> = {
@@ -26,13 +20,17 @@ export async function pdfToImages(
   deps: PdfRenderDeps,
 ): Promise<ToolResult> {
   const outputs = []
+  const notes: string[] = []
   for (const file of files) {
     const base = file.name.replace(/\.[^.]+$/, '')
-    const pages = await deps.pageCount(file.bytes)
-    for (let p = 1; p <= pages; p++) {
-      const blob = await deps.renderPage(file.bytes, p, opts.scale, opts.format)
-      outputs.push({ name: `${base}-p${p}.${EXT[opts.format]}`, blob })
+    try {
+      const blobs = await deps.renderDocument(file.bytes, opts.scale, opts.format)
+      for (let i = 0; i < blobs.length; i++) {
+        outputs.push({ name: `${base}-p${i + 1}.${EXT[opts.format]}`, blob: blobs[i] })
+      }
+    } catch (err) {
+      notes.push(`Skipped ${file.name}: ${err instanceof Error ? err.message : String(err)}`)
     }
   }
-  return { outputs }
+  return { outputs, notes: notes.length ? notes : undefined }
 }

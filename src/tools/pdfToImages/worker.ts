@@ -8,26 +8,24 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
 ).toString()
 
 const deps: PdfRenderDeps = {
-  async pageCount(bytes) {
+  async renderDocument(bytes, scale, format) {
     const doc = await pdfjsLib.getDocument({ data: new Uint8Array(bytes) }).promise
-    const n = doc.numPages
+    const blobs: Blob[] = []
+    for (let p = 1; p <= doc.numPages; p++) {
+      const page = await doc.getPage(p)
+      const viewport = page.getViewport({ scale })
+      const canvas = new OffscreenCanvas(viewport.width, viewport.height)
+      const ctx = canvas.getContext('2d')!
+      await page.render({
+        canvas: canvas as unknown as HTMLCanvasElement,
+        canvasContext: ctx as unknown as CanvasRenderingContext2D,
+        viewport,
+      }).promise
+      const blob = await canvas.convertToBlob({ type: format, quality: 0.92 })
+      blobs.push(blob)
+    }
     await doc.cleanup()
-    return n
-  },
-  async renderPage(bytes, pageNo, scale, format) {
-    const doc = await pdfjsLib.getDocument({ data: new Uint8Array(bytes) }).promise
-    const page = await doc.getPage(pageNo)
-    const viewport = page.getViewport({ scale })
-    const canvas = new OffscreenCanvas(viewport.width, viewport.height)
-    const ctx = canvas.getContext('2d')!
-    await page.render({
-      canvas: canvas as unknown as HTMLCanvasElement,
-      canvasContext: ctx as unknown as CanvasRenderingContext2D,
-      viewport,
-    }).promise
-    const blob = await canvas.convertToBlob({ type: format, quality: 0.92 })
-    await doc.cleanup()
-    return blob
+    return blobs
   },
 }
 
