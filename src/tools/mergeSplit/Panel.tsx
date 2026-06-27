@@ -15,8 +15,8 @@ export function MergeSplitPanel({ files, busy, onRun }: PanelProps) {
 
   return (
     <div className="space-y-3">
-      <fieldset className="space-y-1">
-        <legend className="text-sm font-medium">Mode</legend>
+      <fieldset className="space-y-1.5">
+        <legend className="field-label mb-1">Mode</legend>
         <label className="flex items-center gap-2 text-sm">
           <input
             type="radio"
@@ -39,21 +39,21 @@ export function MergeSplitPanel({ files, busy, onRun }: PanelProps) {
         </label>
       </fieldset>
       {mode === 'extract' && (
-        <label className="block text-sm">
+        <label className="field-label">
           Page range (e.g. 1,3-5)
           <input
             type="text"
             value={range}
             onChange={(e) => setRange(e.target.value)}
             placeholder="1,3-5"
-            className="mt-1 block w-full rounded border p-2"
+            className="field-input"
           />
         </label>
       )}
       <button
         disabled={busy || files.length === 0 || (mode === 'extract' && range.trim() === '')}
         onClick={() => onRun(() => runTransform<MergeSplitOptions>(makeWorker, { files, options: buildOptions() }))}
-        className="rounded bg-blue-600 px-4 py-2 text-white disabled:opacity-40"
+        className="btn-primary"
       >
         {busy ? 'Working…' : 'Run'}
       </button>

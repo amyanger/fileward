@@ -9,20 +9,20 @@ export function CompressPdfPanel({ files, busy, onRun }: PanelProps) {
   const makeWorker = () => new Worker(new URL('./worker.ts', import.meta.url), { type: 'module' })
   return (
     <div className="space-y-3">
-      <label className="block text-sm">
+      <label className="field-label">
         JPEG quality: {Math.round(quality * 100)}%
         <input
           type="range" min={0.3} max={0.9} step={0.05} value={quality}
           onChange={(e) => setQuality(Number(e.target.value))}
-          className="block w-full"
+          className="range-input"
         />
       </label>
-      <label className="block text-sm">
+      <label className="field-label">
         Render scale: {scale.toFixed(1)}×
         <input
           type="range" min={1} max={2} step={0.1} value={scale}
           onChange={(e) => setScale(Number(e.target.value))}
-          className="block w-full"
+          className="range-input"
         />
       </label>
       <button
@@ -32,7 +32,7 @@ export function CompressPdfPanel({ files, busy, onRun }: PanelProps) {
             runTransform<CompressPdfOptions>(makeWorker, { files, options: { quality, scale } }),
           )
         }
-        className="rounded bg-blue-600 px-4 py-2 text-white disabled:opacity-40"
+        className="btn-primary"
       >
         {busy ? 'Working…' : 'Compress'}
       </button>

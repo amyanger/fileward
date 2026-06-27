@@ -9,12 +9,12 @@ export function ImageConvertPanel({ files, busy, onRun }: PanelProps) {
   const makeWorker = () => new Worker(new URL('./worker.ts', import.meta.url), { type: 'module' })
   return (
     <div className="space-y-3">
-      <label className="block text-sm">
+      <label className="field-label">
         Format
         <select
           value={format}
           onChange={(e) => setFormat(e.target.value as ImageConvertOptions['format'])}
-          className="mt-1 block w-full rounded border p-2"
+          className="field-input"
         >
           <option value="image/jpeg">JPG</option>
           <option value="image/png">PNG</option>
@@ -22,12 +22,12 @@ export function ImageConvertPanel({ files, busy, onRun }: PanelProps) {
         </select>
       </label>
       {format !== 'image/png' && (
-        <label className="block text-sm">
+        <label className="field-label">
           Quality: {Math.round(quality * 100)}%
           <input
             type="range" min={0.1} max={1} step={0.05} value={quality}
             onChange={(e) => setQuality(Number(e.target.value))}
-            className="block w-full"
+            className="range-input"
           />
         </label>
       )}
@@ -36,7 +36,7 @@ export function ImageConvertPanel({ files, busy, onRun }: PanelProps) {
         onClick={() =>
           onRun(() => runTransform<ImageConvertOptions>(makeWorker, { files, options: { format, quality } }))
         }
-        className="rounded bg-blue-600 px-4 py-2 text-white disabled:opacity-40"
+        className="btn-primary"
       >
         {busy ? 'Working…' : 'Convert'}
       </button>

@@ -33,11 +33,11 @@ export function Dropzone({
       }}
       onClick={() => inputRef.current?.click()}
       className={`cursor-pointer rounded-xl border-2 border-dashed p-10 text-center transition ${
-        over ? 'border-blue-500 bg-blue-50' : 'border-slate-300 bg-white'
+        over ? 'border-accent bg-accent-soft' : 'border-line bg-surface hover:border-accent/50'
       }`}
     >
-      <p className="font-medium">Drop files here or click to choose</p>
-      <p className="text-sm text-slate-500">Files stay on your device — nothing is uploaded.</p>
+      <p className="font-medium">Drop files here, or click to choose</p>
+      <p className="mt-1 text-sm text-muted">Files stay on your device — nothing is uploaded.</p>
       <input
         ref={inputRef}
         data-testid="file-input"
