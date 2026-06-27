@@ -24,6 +24,27 @@ describe('runTransform', () => {
     expect(res.notes).toEqual(['hi'])
   })
 
+  it('ignores stray non-reply messages (e.g. pdf.js worker protocol) before the result', async () => {
+    class PdfjsWorker extends FakeWorker {
+      postMessage() {
+        queueMicrotask(() => {
+          // pdf.js posts this on the global scope before our real reply
+          this.onmessage?.({
+            data: { sourceName: 'worker', targetName: 'main', action: 'ready', data: null },
+          } as unknown as MessageEvent<TransformReply>)
+          this.onmessage?.({
+            data: { ok: true, result: { outputs: [], notes: ['done'] } },
+          } as unknown as MessageEvent<TransformReply>)
+        })
+      }
+    }
+    const res = await runTransform(() => new PdfjsWorker() as unknown as Worker, {
+      files: [],
+      options: {},
+    })
+    expect(res.notes).toEqual(['done'])
+  })
+
   it('rejects on error reply', async () => {
     class ErrWorker extends FakeWorker {
       postMessage() {

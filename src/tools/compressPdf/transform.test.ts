@@ -29,4 +29,18 @@ describe('compressPdf', () => {
     expect(doc.getPageCount()).toBe(2)
     expect(res.notes?.[0]).toMatch(/big\.pdf/)
   })
+
+  it('reports the original size even when rasterize detaches the input buffer', async () => {
+    // pdf.js takes ownership of the data buffer; emulate detachment here.
+    const deps = {
+      rasterize: vi.fn(async (bytes: ArrayBuffer) => {
+        void structuredClone(bytes, { transfer: [bytes] }) // detach, like pdf.js does
+        return [{ width: 50, height: 50, jpeg: JPEG_1x1.buffer.slice(0) }]
+      }),
+    }
+    const res = await compressPdf([pdf('scan.pdf', 2_000_000)], { quality: 0.6, scale: 1.5 }, deps)
+    // ~1.9 MB original (1024-based) → note must reflect the real size, not "0 B"
+    expect(res.notes?.[0]).toMatch(/1\.9 MB/)
+    expect(res.notes?.[0]).not.toMatch(/0 B/)
+  })
 })

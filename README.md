@@ -1,32 +1,46 @@
-# React + TypeScript + Vite
+# Fileward
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+PDF & image tools that never upload your files. Every transform runs entirely in
+your browser via Web Workers — nothing is sent to a server, so your documents stay
+on your device.
 
-Currently, two official plugins are available:
+## Tools
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Merge & Split PDFs** — combine PDFs or pull out a page range
+- **Compress PDF** — shrink large or scanned PDFs
+- **Images → PDF** — turn photos or scans into one PDF
+- **PDF → Images** — export PDF pages as PNG or JPG
+- **Compress & Convert Images** — resize and convert PNG/JPG/WebP
 
-## React Compiler
+## Getting started
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev      # start the Vite dev server
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Then open the printed `http://localhost:…` URL in your browser.
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start the dev server with HMR |
+| `npm run build` | Type-check (`tsc -b`) and build for production |
+| `npm run preview` | Preview the production build locally |
+| `npm run typecheck` | Type-check without emitting |
+| `npm run lint` | Lint with oxlint |
+| `npx vitest run` | Run the test suite once |
+
+## How it works
+
+Each tool lives in `src/tools/<tool>/` and follows the same shape:
+
+- `transform.ts` — pure transform logic; heavy dependencies (pdf.js, canvas) are
+  injected so the logic stays unit-testable
+- `worker.ts` — runs the transform off the main thread in a Web Worker
+- `Panel.tsx` — the tool's options UI
+- `transform.test.ts` — tests against the pure transform
+
+Tools are registered in `src/tools/registry.tsx`. Built with React 19, TypeScript,
+Vite, and Tailwind CSS.
