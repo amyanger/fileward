@@ -30,13 +30,21 @@ const realDeps: WordToPdfDeps = {
         ignoreWidth: false,
         ignoreHeight: false,
       })
+      // Strip any externally-linked images before rasterizing. docx-preview normally
+      // produces data: or blob: URIs for embedded images, but a document could reference
+      // an http/https URL. Removing those nodes prevents html2canvas from making network
+      // requests, preserving Fileward's zero-network / offline guarantee.
+      container.querySelectorAll('img').forEach((img) => {
+        if (!img.src.startsWith('data:') && !img.src.startsWith('blob:')) {
+          img.remove()
+        }
+      })
       // docx-preview emits one <section> per page. Verify this selector in Safari (Task 7).
       const sections = Array.from(container.querySelectorAll('section'))
       const pages: RasterPage[] = []
       for (const section of sections) {
         const canvas = await html2canvas(section as HTMLElement, {
           scale,
-          useCORS: true,
           backgroundColor: '#ffffff',
         })
         const rect = (section as HTMLElement).getBoundingClientRect()
