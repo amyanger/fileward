@@ -33,6 +33,19 @@ describe('organizePages', () => {
     expect(out.getPage(0).getRotation().angle).toBe(degrees(90).angle)
   })
 
+  it('composes rotation onto the source page existing rotation', async () => {
+    const doc = await PDFDocument.create()
+    const page = doc.addPage([300, 400])
+    page.setRotation(degrees(90))
+    const bytes = await doc.save()
+    const buf = bytes.buffer.slice(0) as ArrayBuffer
+    const input: InputFile = { id: '1', name: 'a.pdf', bytes: buf, type: 'application/pdf' }
+
+    const res = await organizePages([input], { ops: [{ srcPageIndex: 0, rotation: 90 }] })
+    const out = await PDFDocument.load(await res.outputs[0].blob.arrayBuffer())
+    expect(out.getPage(0).getRotation().angle).toBe(degrees(180).angle)
+  })
+
   it('throws when no pages are selected', async () => {
     await expect(
       organizePages([asInput(await makePdf(2))], { ops: [] }),
