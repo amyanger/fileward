@@ -19,15 +19,15 @@ export async function extractText(
     const base = file.name.replace(/\.[^.]+$/, '')
     try {
       const pages = await deps.extractPages(file.bytes)
+      if (pages.every((p) => p.trim() === '')) {
+        notes.push(`No selectable text found in ${file.name} — this looks like a scanned PDF.`)
+        continue
+      }
       const text = pages
         .map((p, i) =>
           opts.pageBreaks && i > 0 ? `----- Page ${i + 1} -----\n\n${p}` : p,
         )
         .join('\n\n')
-      if (text.trim() === '') {
-        notes.push(`No selectable text found in ${file.name} — this looks like a scanned PDF.`)
-        continue
-      }
       outputs.push({ name: `${base}.txt`, blob: new Blob([text], { type: 'text/plain' }) })
     } catch (err) {
       notes.push(`Skipped ${file.name}: ${err instanceof Error ? err.message : String(err)}`)

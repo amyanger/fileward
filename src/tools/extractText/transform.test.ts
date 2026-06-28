@@ -26,4 +26,10 @@ describe('extractText', () => {
     expect(res.outputs).toHaveLength(0)
     expect(res.notes?.[0]).toContain('scanned PDF')
   })
+
+  it('detects a scanned PDF even when pageBreaks is true', async () => {
+    const res = await extractText([input], { pageBreaks: true }, depsReturning(['', '  ']))
+    expect(res.outputs).toHaveLength(0)
+    expect(res.notes?.[0]).toContain('scanned PDF')
+  })
 })
