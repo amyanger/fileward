@@ -1,6 +1,6 @@
 import { PDFDocument, StandardFonts, degrees, rgb } from 'pdf-lib'
 import type { InputFile, ToolResult } from '../../types'
-import { centerOrigin, tileOrigins, type WatermarkLayout } from './helpers'
+import { centerOrigin, tileOrigins, hexToRgb01, type WatermarkLayout } from './helpers'
 
 export interface WatermarkOptions {
   text: string
@@ -8,6 +8,7 @@ export interface WatermarkOptions {
   angle: number
   fontSize: number
   layout: WatermarkLayout
+  color?: string // hex; defaults to mid-gray
 }
 
 export async function addWatermark(
@@ -22,10 +23,11 @@ export async function addWatermark(
       const doc = await PDFDocument.load(new Uint8Array(file.bytes))
       const font = await doc.embedFont(StandardFonts.Helvetica)
       const textW = font.widthOfTextAtSize(opts.text, opts.fontSize)
+      const c = hexToRgb01(opts.color ?? '#808080')
       const common = {
         size: opts.fontSize,
         font,
-        color: rgb(0.5, 0.5, 0.5),
+        color: rgb(c.r, c.g, c.b),
         opacity: opts.opacity,
         rotate: degrees(opts.angle),
       }

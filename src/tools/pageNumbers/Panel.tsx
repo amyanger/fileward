@@ -7,6 +7,8 @@ export function PageNumbersPanel({ files, busy, onRun }: PanelProps) {
   const [position, setPosition] = useState<PageNumbersOptions['position']>('bottom-center')
   const [format, setFormat] = useState<PageNumbersOptions['format']>('plain')
   const [startAt, setStartAt] = useState(1)
+  const [fontSize, setFontSize] = useState(12)
+  const [margin, setMargin] = useState(24)
   const makeWorker = () => new Worker(new URL('./worker.ts', import.meta.url), { type: 'module' })
   return (
     <div className="space-y-3">
@@ -45,13 +47,31 @@ export function PageNumbersPanel({ files, busy, onRun }: PanelProps) {
           className="field-input"
         />
       </label>
+      <label className="field-label">
+        Font size: {fontSize}
+        <input
+          type="range" min={8} max={36} step={1}
+          value={fontSize}
+          onChange={(e) => setFontSize(Number(e.target.value))}
+          className="range-input"
+        />
+      </label>
+      <label className="field-label">
+        Margin: {margin}
+        <input
+          type="range" min={8} max={72} step={2}
+          value={margin}
+          onChange={(e) => setMargin(Number(e.target.value))}
+          className="range-input"
+        />
+      </label>
       <button
         disabled={busy || files.length === 0}
         onClick={() =>
           onRun(() =>
             runTransform<PageNumbersOptions>(makeWorker, {
               files,
-              options: { position, format, startAt, fontSize: 12, margin: 24 },
+              options: { position, format, startAt, fontSize, margin },
             }),
           )
         }

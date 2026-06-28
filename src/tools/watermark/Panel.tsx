@@ -9,6 +9,7 @@ export function WatermarkPanel({ files, busy, onRun }: PanelProps) {
   const [angle, setAngle] = useState(45)
   const [fontSize, setFontSize] = useState(48)
   const [opacity, setOpacity] = useState(0.15)
+  const [color, setColor] = useState('#808080')
   const makeWorker = () => new Worker(new URL('./worker.ts', import.meta.url), { type: 'module' })
   return (
     <div className="space-y-3">
@@ -58,13 +59,22 @@ export function WatermarkPanel({ files, busy, onRun }: PanelProps) {
           className="field-input"
         />
       </label>
+      <label className="field-label">
+        Color
+        <input
+          type="color"
+          value={color}
+          onChange={(e) => setColor(e.target.value)}
+          className="field-input h-10 p-1"
+        />
+      </label>
       <button
         disabled={busy || files.length === 0 || text.trim() === ''}
         onClick={() =>
           onRun(() =>
             runTransform<WatermarkOptions>(makeWorker, {
               files,
-              options: { text: text.trim(), opacity, angle, fontSize, layout },
+              options: { text: text.trim(), opacity, angle, fontSize, layout, color },
             }),
           )
         }

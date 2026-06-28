@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { centerOrigin, tileOrigins } from './helpers'
+import { centerOrigin, tileOrigins, hexToRgb01 } from './helpers'
 
 describe('centerOrigin', () => {
   it('at 0° centers the baseline horizontally and drops half a line below mid', () => {
@@ -11,6 +11,19 @@ describe('centerOrigin', () => {
     const o = centerOrigin(600, 800, 200, 48, 90)
     expect(o.x).toBeCloseTo(300, 6)
     expect(o.y).toBeCloseTo(276, 6)
+  })
+})
+
+describe('hexToRgb01', () => {
+  it('parses #rrggbb into 0..1 channels', () => {
+    expect(hexToRgb01('#ff0000')).toEqual({ r: 1, g: 0, b: 0 })
+    expect(hexToRgb01('#000000')).toEqual({ r: 0, g: 0, b: 0 })
+  })
+  it('accepts shorthand and a missing #', () => {
+    expect(hexToRgb01('fff')).toEqual({ r: 1, g: 1, b: 1 })
+  })
+  it('falls back to mid-gray on invalid input', () => {
+    expect(hexToRgb01('nope')).toEqual({ r: 0.5, g: 0.5, b: 0.5 })
   })
 })
 

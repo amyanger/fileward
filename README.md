@@ -6,8 +6,12 @@ on your device.
 
 ## Tools
 
+- **Organize Pages** — reorder, rotate, and delete PDF pages
 - **Merge & Split PDFs** — combine PDFs or pull out a page range
 - **Compress PDF** — shrink large or scanned PDFs
+- **Add Page Numbers** — stamp page numbers with position, format, size, and margin
+- **Watermark PDF** — overlay text like CONFIDENTIAL across pages, with color control
+- **Extract Text** — pull selectable text out of a PDF to a .txt file
 - **Images → PDF** — turn photos or scans into one PDF
 - **PDF → Images** — export PDF pages as PNG or JPG
 - **Compress & Convert Images** — resize and convert PNG/JPG/WebP

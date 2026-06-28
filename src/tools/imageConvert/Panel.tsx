@@ -6,6 +6,7 @@ import type { ImageConvertOptions } from './transform'
 export function ImageConvertPanel({ files, busy, onRun }: PanelProps) {
   const [format, setFormat] = useState<ImageConvertOptions['format']>('image/jpeg')
   const [quality, setQuality] = useState(0.8)
+  const [maxWidth, setMaxWidth] = useState(0) // 0 = keep original size
   const makeWorker = () => new Worker(new URL('./worker.ts', import.meta.url), { type: 'module' })
   return (
     <div className="space-y-3">
@@ -31,10 +32,23 @@ export function ImageConvertPanel({ files, busy, onRun }: PanelProps) {
           />
         </label>
       )}
+      <label className="field-label">
+        Max width (px) — leave 0 to keep original
+        <input
+          type="number" min={0} step={50} value={maxWidth}
+          onChange={(e) => setMaxWidth(Math.max(0, Math.floor(Number(e.target.value) || 0)))}
+          className="field-input"
+        />
+      </label>
       <button
         disabled={busy || files.length === 0}
         onClick={() =>
-          onRun(() => runTransform<ImageConvertOptions>(makeWorker, { files, options: { format, quality } }))
+          onRun(() =>
+            runTransform<ImageConvertOptions>(makeWorker, {
+              files,
+              options: { format, quality, maxWidth: maxWidth > 0 ? maxWidth : undefined },
+            }),
+          )
         }
         className="btn-primary"
       >

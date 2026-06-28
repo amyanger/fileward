@@ -1,5 +1,22 @@
 export type WatermarkLayout = 'center' | 'tile'
 
+/**
+ * Parse a CSS hex color (`#rgb`, `#rrggbb`, with or without `#`) into pdf-lib's
+ * 0..1 channel range. Falls back to mid-gray on anything unparseable so a bad
+ * value can never crash the transform.
+ */
+export function hexToRgb01(hex: string): { r: number; g: number; b: number } {
+  const gray = { r: 0.5, g: 0.5, b: 0.5 }
+  let h = hex.trim().replace(/^#/, '')
+  if (h.length === 3) h = h.replace(/./g, (c) => c + c)
+  if (!/^[0-9a-fA-F]{6}$/.test(h)) return gray
+  return {
+    r: parseInt(h.slice(0, 2), 16) / 255,
+    g: parseInt(h.slice(2, 4), 16) / 255,
+    b: parseInt(h.slice(4, 6), 16) / 255,
+  }
+}
+
 export function centerOrigin(
   pageW: number,
   pageH: number,
