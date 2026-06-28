@@ -56,3 +56,39 @@ describe('parseBlocks', () => {
     expect((blocks[0] as { runs: { text: string }[] }).runs[0].text).toBe('a   b')
   })
 })
+
+import { PDFDocument } from 'pdf-lib'
+import { layoutTextPdf, buildImagePdf } from './helpers'
+
+// 1x1 transparent PNG.
+const PNG_1PX =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='
+
+describe('layoutTextPdf', () => {
+  it('produces a one-page Letter PDF for short content', async () => {
+    const bytes = await layoutTextPdf('<h1>Hi</h1><p>Short body.</p>', 'letter')
+    const doc = await PDFDocument.load(bytes)
+    expect(doc.getPageCount()).toBe(1)
+    const { width, height } = doc.getPage(0).getSize()
+    expect(Math.round(width)).toBe(612)
+    expect(Math.round(height)).toBe(792)
+  })
+
+  it('paginates long content onto multiple pages', async () => {
+    const longHtml = '<p>' + 'word '.repeat(4000) + '</p>'
+    const doc = await PDFDocument.load(await layoutTextPdf(longHtml, 'a4'))
+    expect(doc.getPageCount()).toBeGreaterThan(1)
+  })
+})
+
+describe('buildImagePdf', () => {
+  it('makes one page per raster image at the given point size', async () => {
+    const bytes = await buildImagePdf([
+      { dataUrl: PNG_1PX, widthPt: 200, heightPt: 300 },
+      { dataUrl: PNG_1PX, widthPt: 200, heightPt: 300 },
+    ])
+    const doc = await PDFDocument.load(bytes)
+    expect(doc.getPageCount()).toBe(2)
+    expect(Math.round(doc.getPage(0).getSize().width)).toBe(200)
+  })
+})
