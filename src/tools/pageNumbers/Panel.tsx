@@ -1,0 +1,64 @@
+import { useState } from 'react'
+import { runTransform } from '../../lib/runWorker'
+import type { PanelProps } from '../../components/ToolPage'
+import type { PageNumbersOptions } from './transform'
+
+export function PageNumbersPanel({ files, busy, onRun }: PanelProps) {
+  const [position, setPosition] = useState<PageNumbersOptions['position']>('bottom-center')
+  const [format, setFormat] = useState<PageNumbersOptions['format']>('plain')
+  const [startAt, setStartAt] = useState(1)
+  const makeWorker = () => new Worker(new URL('./worker.ts', import.meta.url), { type: 'module' })
+  return (
+    <div className="space-y-3">
+      <label className="field-label">
+        Position
+        <select
+          value={position}
+          onChange={(e) => setPosition(e.target.value as PageNumbersOptions['position'])}
+          className="field-input"
+        >
+          <option value="bottom-center">Bottom center</option>
+          <option value="bottom-left">Bottom left</option>
+          <option value="bottom-right">Bottom right</option>
+          <option value="top-center">Top center</option>
+          <option value="top-left">Top left</option>
+          <option value="top-right">Top right</option>
+        </select>
+      </label>
+      <label className="field-label">
+        Format
+        <select
+          value={format}
+          onChange={(e) => setFormat(e.target.value as PageNumbersOptions['format'])}
+          className="field-input"
+        >
+          <option value="plain">1</option>
+          <option value="slash">1 / N</option>
+          <option value="word">Page 1</option>
+        </select>
+      </label>
+      <label className="field-label">
+        Start at
+        <input
+          type="number" min={0} value={startAt}
+          onChange={(e) => setStartAt(Math.max(0, Math.floor(Number(e.target.value) || 0)))}
+          className="field-input"
+        />
+      </label>
+      <button
+        disabled={busy || files.length === 0}
+        onClick={() =>
+          onRun(() =>
+            runTransform<PageNumbersOptions>(makeWorker, {
+              files,
+              options: { position, format, startAt, fontSize: 12, margin: 24 },
+            }),
+          )
+        }
+        className="btn-primary"
+      >
+        {busy ? 'Working…' : 'Add page numbers'}
+      </button>
+    </div>
+  )
+}
