@@ -18,6 +18,7 @@ export function OrganizePagesPanel({ files, busy, onRun }: PanelProps) {
     if (!file) {
       setThumbs([])
       setOps([])
+      setLoading(false)
       return
     }
     let cancelled = false
@@ -62,26 +63,29 @@ export function OrganizePagesPanel({ files, busy, onRun }: PanelProps) {
         <p className="text-sm text-muted">Add a PDF to organize its pages.</p>
       )}
       <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
-        {ops.map((op, i) => (
-          <div key={`${op.srcPageIndex}-${i}`} className="rounded-lg border border-line p-2">
-            <div className="aspect-[3/4] overflow-hidden rounded bg-white">
-              {thumbFor(op.srcPageIndex) && (
-                <img
-                  src={thumbFor(op.srcPageIndex)}
-                  alt={`Page ${op.srcPageIndex + 1}`}
-                  className="h-full w-full object-contain"
-                  style={{ transform: `rotate(${op.rotation}deg)` }}
-                />
-              )}
+        {ops.map((op, i) => {
+          const thumb = thumbFor(op.srcPageIndex)
+          return (
+            <div key={op.srcPageIndex} className="rounded-lg border border-line p-2">
+              <div className="aspect-[3/4] overflow-hidden rounded bg-white">
+                {thumb && (
+                  <img
+                    src={thumb}
+                    alt={`Page ${op.srcPageIndex + 1}`}
+                    className="h-full w-full object-contain"
+                    style={{ transform: `rotate(${op.rotation}deg)` }}
+                  />
+                )}
+              </div>
+              <div className="mt-1 flex items-center justify-between text-xs">
+                <button onClick={() => move(i, -1)} disabled={i === 0} aria-label="Move left">◀</button>
+                <button onClick={() => rotate(i)} aria-label="Rotate">⟳</button>
+                <button onClick={() => remove(i)} aria-label="Delete">🗑</button>
+                <button onClick={() => move(i, 1)} disabled={i === ops.length - 1} aria-label="Move right">▶</button>
+              </div>
             </div>
-            <div className="mt-1 flex items-center justify-between text-xs">
-              <button onClick={() => move(i, -1)} disabled={i === 0} aria-label="Move left">◀</button>
-              <button onClick={() => rotate(i)} aria-label="Rotate">⟳</button>
-              <button onClick={() => remove(i)} aria-label="Delete">🗑</button>
-              <button onClick={() => move(i, 1)} disabled={i === ops.length - 1} aria-label="Move right">▶</button>
-            </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
       <button
         disabled={busy || !file || ops.length === 0}
