@@ -82,6 +82,12 @@ const ToolGlyphs: Record<string, ReactNode> = {
       <path d="M9 9.5h2M13 14.5h2" />
     </>
   ),
+  'extract-text': (
+    <>
+      <rect x="5" y="3.5" width="14" height="17" rx="1.5" />
+      <path d="M8.5 8h7M8.5 11h7M8.5 14h4" />
+    </>
+  ),
 }
 
 export function ToolIcon({ id, ...props }: { id: string } & SVGProps<SVGSVGElement>) {

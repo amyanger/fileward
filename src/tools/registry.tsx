@@ -8,6 +8,7 @@ import { MergeSplitPanel } from './mergeSplit/Panel'
 import { CompressPdfPanel } from './compressPdf/Panel'
 import { PageNumbersPanel } from './pageNumbers/Panel'
 import { WatermarkPanel } from './watermark/Panel'
+import { ExtractTextPanel } from './extractText/Panel'
 
 export interface ToolEntry {
   def: ToolDef
@@ -30,6 +31,10 @@ export const TOOLS: ToolEntry[] = [
   {
     def: { id: 'watermark', title: 'Watermark PDF', description: 'Overlay text like CONFIDENTIAL across pages.', accept: 'application/pdf' },
     renderPanel: (p) => <WatermarkPanel {...p} />,
+  },
+  {
+    def: { id: 'extract-text', title: 'Extract Text', description: 'Pull selectable text out of a PDF to a .txt file.', accept: 'application/pdf' },
+    renderPanel: (p) => <ExtractTextPanel {...p} />,
   },
   {
     def: { id: 'images-to-pdf', title: 'Images → PDF', description: 'Turn photos or scans into one PDF.', accept: 'image/*' },
