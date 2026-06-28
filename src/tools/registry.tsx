@@ -9,6 +9,7 @@ import { CompressPdfPanel } from './compressPdf/Panel'
 import { PageNumbersPanel } from './pageNumbers/Panel'
 import { WatermarkPanel } from './watermark/Panel'
 import { ExtractTextPanel } from './extractText/Panel'
+import { OrganizePagesPanel } from './organizePages/Panel'
 
 export interface ToolEntry {
   def: ToolDef
@@ -16,6 +17,10 @@ export interface ToolEntry {
 }
 
 export const TOOLS: ToolEntry[] = [
+  {
+    def: { id: 'organize-pages', title: 'Organize Pages', description: 'Reorder, rotate, and delete PDF pages.', accept: 'application/pdf' },
+    renderPanel: (p) => <OrganizePagesPanel {...p} />,
+  },
   {
     def: { id: 'merge-split', title: 'Merge & Split PDFs', description: 'Combine PDFs or pull out a page range.', accept: 'application/pdf' },
     renderPanel: (p) => <MergeSplitPanel {...p} />,

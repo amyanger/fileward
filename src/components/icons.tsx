@@ -88,6 +88,13 @@ const ToolGlyphs: Record<string, ReactNode> = {
       <path d="M8.5 8h7M8.5 11h7M8.5 14h4" />
     </>
   ),
+  'organize-pages': (
+    <>
+      <rect x="3.5" y="6" width="7" height="9" rx="1.2" />
+      <rect x="13.5" y="9" width="7" height="9" rx="1.2" />
+      <path d="M7 18.5v1M17 4.5v1" />
+    </>
+  ),
 }
 
 export function ToolIcon({ id, ...props }: { id: string } & SVGProps<SVGSVGElement>) {
