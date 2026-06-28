@@ -88,6 +88,13 @@ const ToolGlyphs: Record<string, ReactNode> = {
       <path d="M8.5 8h7M8.5 11h7M8.5 14h4" />
     </>
   ),
+  'word-to-pdf': (
+    <>
+      <rect x="5" y="3.5" width="14" height="17" rx="1.5" />
+      <path d="M8 8.5l1 4 1.5-4 1.5 4 1-4" />
+      <path d="M8.5 16h7" />
+    </>
+  ),
   'organize-pages': (
     <>
       <rect x="3.5" y="6" width="7" height="9" rx="1.2" />

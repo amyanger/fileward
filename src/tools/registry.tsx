@@ -10,6 +10,7 @@ import { PageNumbersPanel } from './pageNumbers/Panel'
 import { WatermarkPanel } from './watermark/Panel'
 import { ExtractTextPanel } from './extractText/Panel'
 import { OrganizePagesPanel } from './organizePages/Panel'
+import { WordToPdfPanel } from './wordToPdf/Panel'
 
 export interface ToolEntry {
   def: ToolDef
@@ -40,6 +41,15 @@ export const TOOLS: ToolEntry[] = [
   {
     def: { id: 'extract-text', title: 'Extract Text', description: 'Pull selectable text out of a PDF to a .txt file.', accept: 'application/pdf' },
     renderPanel: (p) => <ExtractTextPanel {...p} />,
+  },
+  {
+    def: {
+      id: 'word-to-pdf',
+      title: 'Word to PDF',
+      description: 'Convert .docx files to PDF — selectable text or pixel-faithful.',
+      accept: '.docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    },
+    renderPanel: (p) => <WordToPdfPanel {...p} />,
   },
   {
     def: { id: 'images-to-pdf', title: 'Images → PDF', description: 'Turn photos or scans into one PDF.', accept: 'image/*' },
